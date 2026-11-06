@@ -26,6 +26,8 @@ via ``ctx.runtime``.
 
 from __future__ import annotations
 
+import json
+from data_formulator.data_quality import check_data_quality
 import logging
 from typing import Any, Generator
 
@@ -72,6 +74,31 @@ class CoreSkill:
         special-casing.)
         """
         input_tables = (ctx.payload or {}).get("input_tables") or []
+        if name == "check_data_quality":
+            table_name = args.get("table_name")
+
+            available_names = {
+                table.get("name") for table in input_tables
+            }
+            if not isinstance(table_name, str) or table_name not in available_names:
+                return ToolResult(
+                    text="Error: choose an existing table from the available tables."
+                )
+
+            try:
+                df = ctx.workspace.read_data_as_df(table_name)
+                report = check_data_quality(df)
+                logger.info("check_data_quality completed: table=%s", table_name)
+                report["table_name"] = table_name
+
+                return ToolResult(
+                    text=json.dumps(report, ensure_ascii=False)
+                )
+            except Exception:
+                logger.exception("Data quality check failed")
+                return ToolResult(
+                    text="Error: data quality check failed. No quality conclusion is available."
+                )
         if name == "execute_python_script":
             result = ctx.runtime.run_explore_code(args.get("code", ""), input_tables)
             text = result.get("stdout", "")

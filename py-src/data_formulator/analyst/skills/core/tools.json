@@ -1,4 +1,22 @@
 [
+    {
+    "type": "function",
+    "function": {
+      "name": "check_data_quality",
+      "description": "Check an existing workspace table for missing values, duplicate rows, and constant columns. Report findings without modifying the data. Constant columns are not necessarily errors.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table_name": {
+            "type": "string",
+            "description": "Exact workspace table name from the available tables."
+          }
+        },
+        "required": ["table_name"],
+        "additionalProperties": false
+      }
+    }
+  },
   {
     "type": "function",
     "function": {

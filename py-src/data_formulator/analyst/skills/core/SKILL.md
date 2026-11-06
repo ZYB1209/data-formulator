@@ -8,6 +8,7 @@ always_on: true
 tools:
   - execute_python_script
   - inspect_source_data
+  - check_data_quality
 actions:
   - visualize
   - ask_user
@@ -34,6 +35,11 @@ to use it well.
   source tables (cheaper than `execute_python_script` for basic inspection).
 - **load_skill(name)** — load a skill's instructions into context so you can use
   the action it unlocks (see the Skills section of your system instructions).
+- **check_data_quality(table_name)** — check an existing workspace table for
+  missing values, duplicate rows, and constant columns without modifying it.
+  Use this tool when the user requests these data-quality checks.
+  Report the returned counts accurately. Constant columns are not necessarily
+  errors. If the tool fails, explain the failure rather than inventing results.
 
 These are inspection tools — their results come back to you and are never shown
 to the user; call as many as you need, then take an action or give your final
