@@ -2,6 +2,33 @@
     {
     "type": "function",
     "function": {
+      "name": "summarize_signals",
+      "description": "Summarize selected signal channels in an existing workspace table. Return valid and missing counts, mean, population standard deviation, minimum, maximum, peak-to-peak range, and channels with the largest standard deviation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table_name": {
+            "type": "string",
+            "description": "Exact name of an available workspace table."
+          },
+          "channel_columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Exact signal column names. Exclude time, sample index, position and other metadata columns."
+          }
+        },
+        "required": ["table_name", "channel_columns"],
+        "additionalProperties": false
+      }
+    }
+  },
+    {
+    "type": "function",
+    "function": {
       "name": "check_data_quality",
       "description": "Check an existing workspace table for missing values, duplicate rows, and constant columns. Report findings without modifying the data. Constant columns are not necessarily errors.",
       "parameters": {

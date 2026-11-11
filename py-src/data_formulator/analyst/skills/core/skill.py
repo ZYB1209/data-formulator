@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import json
 from data_formulator.data_quality import check_data_quality
+from data_formulator.signal_summary import summarize_signals
 import logging
 from typing import Any, Generator
 
@@ -98,6 +99,49 @@ class CoreSkill:
                 logger.exception("Data quality check failed")
                 return ToolResult(
                     text="Error: data quality check failed. No quality conclusion is available."
+                )
+        if name == "summarize_signals":
+            table_name = args.get("table_name")
+            channel_columns = args.get("channel_columns")
+
+            available_names = {
+                table.get("name") for table in input_tables
+            }
+            if not isinstance(table_name, str) or table_name not in available_names:
+                return ToolResult(
+                    text="Error: choose an existing table from the available tables."
+                )
+
+            if (
+                not isinstance(channel_columns, list)
+                or not channel_columns
+                or not all(isinstance(column, str) for column in channel_columns)
+            ):
+                return ToolResult(
+                    text="Error: channel_columns must be a non-empty list of column names."
+                )
+
+            try:
+                df = ctx.workspace.read_data_as_df(table_name)
+                report = summarize_signals(df, channel_columns)
+                report["table_name"] = table_name
+
+                result_text = json.dumps(
+                    report, ensure_ascii=False, allow_nan=False
+                )
+                logger.info(
+                    "summarize_signals completed: table=%s channels=%s",
+                    table_name,
+                    channel_columns,
+                )
+                return ToolResult(text=result_text)
+
+            except ValueError as error:
+                return ToolResult(text=f"Error: {error}")
+            except Exception:
+                logger.exception("Signal summary failed")
+                return ToolResult(
+                    text="Error: signal summary failed. No conclusion is available."
                 )
         if name == "execute_python_script":
             result = ctx.runtime.run_explore_code(args.get("code", ""), input_tables)

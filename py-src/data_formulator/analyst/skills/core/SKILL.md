@@ -9,6 +9,7 @@ tools:
   - execute_python_script
   - inspect_source_data
   - check_data_quality
+  - summarize_signals
 actions:
   - visualize
   - ask_user
@@ -324,3 +325,20 @@ for the number of rows remaining after removing exact duplicates and
 rows with any missing value. Quote this tool-returned count directly.
 This is a hypothetical filtering count, not a claim that the source
 table was modified or that the remaining rows are suitable for modeling.
+
+For multi-channel signal summaries and comparisons of channel variation,
+use summarize_signals(table_name, channel_columns).
+
+Select exact signal column names from the workspace table schema.
+Exclude time, sample index, position and metadata columns.
+If the signal columns are unclear, ask the user to identify them.
+
+Report the tool's returned statistics accurately.
+Standard deviation uses ddof=0 and peak-to-peak means maximum minus minimum.
+The most_variable_channels field ranks channels by standard deviation.
+Greater variation alone does not establish a defect.
+Use units only when supplied by the data or the user.
+Null statistics mean no valid observations are available.
+
+If a chart is requested, use the existing visualize action with the
+original signal data after obtaining the summary.
