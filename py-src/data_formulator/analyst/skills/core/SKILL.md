@@ -318,3 +318,9 @@ Key guidelines:
 - **Regression**: use chart_type "Regression" — the trend line is automatic, do NOT compute regression values in Python code. Configure method via `{"regressionMethod": "linear"}` (options: "linear", "log", "exp", "pow", "quad", "poly"; for poly add `{"polyOrder": 3}`).
 - **Forecasting**: compute predicted future values in Python. Use Line Chart with strokeDash to distinguish actual vs forecast, and color for series grouping.
 - **Clustering**: compute cluster assignments in Python. Output [x, y, cluster_id]. Use Scatter Plot with color → cluster_id.
+
+When reporting check_data_quality results, use complete_unique_row_count
+for the number of rows remaining after removing exact duplicates and
+rows with any missing value. Quote this tool-returned count directly.
+This is a hypothetical filtering count, not a claim that the source
+table was modified or that the remaining rows are suitable for modeling.

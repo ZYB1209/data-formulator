@@ -24,4 +24,6 @@ def check_data_quality(df: pd.DataFrame) -> dict:
         # 相同记录保留第一条，其余计为重复行
         "duplicate_row_count": int(df.duplicated().sum()),
         "constant_columns": [str(column) for column in constant_columns],
+                # 按整行去重，再排除任意列含缺失值的行，统计剩余行数
+        "complete_unique_row_count": int(len(df.drop_duplicates().dropna())),
     }

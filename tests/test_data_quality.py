@@ -25,6 +25,7 @@ class TestDataQuality(unittest.TestCase):
         )
         self.assertEqual(result["duplicate_row_count"], 1)
         self.assertEqual(result["constant_columns"], ["channel"])
+        self.assertEqual(result["complete_unique_row_count"], 2)
         pd.testing.assert_frame_equal(df, original)
 
     def test_clean_two_channel_data(self):
@@ -50,6 +51,7 @@ class TestDataQuality(unittest.TestCase):
         )
         self.assertEqual(result["duplicate_row_count"], 0)
         self.assertEqual(result["constant_columns"], [])
+        self.assertEqual(result["complete_unique_row_count"], 240)
         pd.testing.assert_frame_equal(df, original)
 
 class TestDataQualityTool(unittest.TestCase):
@@ -96,6 +98,7 @@ class TestDataQualityTool(unittest.TestCase):
             },
             "duplicate_row_count": 1,
             "constant_columns": ["channel"],
+            "complete_unique_row_count": 2,
         })
         self.workspace.read_data_as_df.assert_called_once_with("demo")
 
